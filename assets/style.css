@@ -86,3 +86,6 @@ h1 {
 hr {
     border: 1px solid var(--c-aside);
 }
+#poll-timeline a {
+    border: 0;
+}
