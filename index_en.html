@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Language" content="en">
+    <title>Lithuanian party opinion polling</title>
+    <script src="assets/zingchart.min.js"></script>
+    <script src="assets/csvToArray.v2.1.min.js"></script>
+    <script src="assets/script.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Asap+Condensed:wght@500&family=Libre+Baskerville:wght@400&display=swap&subset=latin,latin-ext" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="assets/style.css">
+    <link rel="alternate" hreflang="lt" href="index.html">
+    <link rel="alternate" hreflang="en" href="index_en.html">
+  </head>
+  <body>
+    <main>
+      <section id="content">
+        <a class="language-link" href="index.html" lang="lt" title="Lietuviškai">LT</a>
+        <h1>Lithuanian party opinion polling <small>(updated <span id="updated_at">2021-11-15</span>)</small></h1>
+        <div id="poll-timeline"></div>
+
+        <p>The graph shows Lithuanian public opinion of political parties, pooled from poll results published in the media from various pollsters (Baltijos tyrimai/ELTA), Spinter tyrimai/Delfi, Vilmorus/Lietuvos rytas). The shaded areas mark the 95% credible interval. The percentages are calculated from all respondents, including the undecided. The graph will be updated as new poll results are released.</p>
+
+        <p>Every poll has its margin of error: when 1000 random Lithuanian voters are polled, the results may differ from reality by up to ±3 percentage points. Every pollster may also have a certain bias caused by their methodology and selection of respondents, where the results for individual parties may always skew to either direction. However, when new polling results are reported in the media, they are usually only compared to one earlier poll from the same pollster, so often times the report does not discuss real changes in public opinion, but only statistical noise emerging from compounded errors. Pooling the polls eliminates statistical noise and compensates for pollster bias, so the lines of the graph provide a better picture of party popularity.</p>
+
+        <p>All raw data and the pooling source code are available <a href="https://github.com/bucaneer/lt-reitingai">here</a>.</p>
+      </section>
+    </main>
+  </body>
+</html>

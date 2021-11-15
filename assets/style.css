@@ -1,0 +1,88 @@
+:root {
+    --c-light: #fefefc;
+    --c-dark: #100604;
+    --c-lighter-text: #302624;
+    --c-primary: #9B1D20;
+    --c-secondary: #180B5B;
+    --c-link: #009FB7;
+    --c-visited: #0d0630;
+    --c-highlight: #e9eced;
+    --c-aside: #E6CB9A;
+    
+    font-size: 14px;
+
+    --f-serif: 'Libre Baskerville', Baskerville, Cambria, Georgia, serif;
+    --f-sans: 'Asap Condensed', 'Arial Narrow', Arial, sans-serif;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    background-color: var(--c-light);
+    font-family: var(--f-serif);
+}
+
+main {
+    margin: auto;
+    width: min(1200px, 100vw);
+}
+
+section#content {
+    position: relative;
+}
+
+div#poll-timeline {
+    height: 600px;
+}
+
+.language-link {
+    font-family: var(--f-sans);
+    position: absolute;
+    right: 2.5em;
+    top: 1em;
+}
+
+::selection { 
+    background-color: var(--c-highlight);
+}
+p {
+    line-height: 1.625rem;
+    word-wrap: break-word;
+    margin-left: 175px;
+    margin-right: 175px;
+}
+a {
+    color: var(--c-link);
+    text-decoration: none;
+    border-bottom: 1px solid currentColor;
+    outline: none;
+}
+a:visited {
+    color: var(--c-visited);
+}
+a:focus {
+    background-color: var(--c-link);
+    color: var(--c-light);
+    border-color: var(--c-link);
+}
+a:hover {
+    border-bottom-width: 2px;
+}
+a:active {
+    background-color: var(--c-visited);
+    color: var(--c-light);
+    border-color: var(--c-visited);
+}
+h1 {
+    font-family: var(--f-sans);
+    color: var(--c-primary);
+    font-weight: 500;
+    font-size: 1.75rem;
+    text-align: center;
+    margin-top: .5em;
+    margin-bottom: .25em;
+}
+hr {
+    border: 1px solid var(--c-aside);
+}
