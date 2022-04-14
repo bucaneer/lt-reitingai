@@ -38,8 +38,9 @@ load_raw <- function() {
         "DP",
         "LP",
         "LSDDP/LRP",
-        "LLRA-KSS"
-        #"TT/LT",
+        "LLRA-KSS",
+        "TT/LT",
+        "VL"
         #"CP/TTS",
     ))
     
@@ -84,6 +85,9 @@ load_raw <- function() {
     #    
     #     multi_dta[[i]] <<- dta
     # }
+
+    # Replace 0 values with 0.001%
+    series[series == 0] <- 0.00001
 
     # Replace NA values with 1%
     series[is.na(series)] <- 0.01

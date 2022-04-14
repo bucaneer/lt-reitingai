@@ -127,7 +127,7 @@ const partyStyles = {
     description_en: "Electoral Action of Poles in Lithuania – Christian Families Alliance",
   },
   "TT.LT": {
-    color: "#CC79A7",
+    color: "#fbba00",
     label: "TT/LT",
     description_lt: "Tvarka ir teisingumas / Laisvė ir teisingumas",
     description_en: "Order and Justice / Freedom and Justice",
@@ -155,6 +155,12 @@ const partyStyles = {
     label: "LSDDP/LRP",
     description_lt: "Lietuvos socialdemokratų darbo partija / Lietuvos regionų partija",
     description_en: "Social Democratic Labour Party of Lithuania / Lithuanian Party of Regions",
+  },
+  "VL": {
+    color: "#002060",
+    label: "DSVL",
+    description_lt: "Demokratų sąjunga \"Vardan Lietuvos\"",
+    description_en: "Union of Democrats \"For Lithuania\"",
   },
 };
 
