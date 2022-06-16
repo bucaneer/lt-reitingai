@@ -182,7 +182,11 @@ const dates = [];
 const pollsters = [];
 const hidden_parties = [];
 const party_max_y = {};
+const dblclick_threshhold = 500;
 let polls_enabled = false;
+let legend_click_target;
+let legend_click_time;
+let dblclick_timeout;
 
 function loadPollModel(data) {
   const header = data[0];
@@ -453,34 +457,67 @@ async function loadPolls(data) {
   renderChart();
 }
 
-function onLegendClick(e) {
+function togglePlot(party, hide) {
   // Add or remove party ID from hidden_parties list
-  if (e.visible) {
-    if (!hidden_parties.includes(e.plotid)) {
-      hidden_parties.push(e.plotid);
+  if (hide) {
+    if (!hidden_parties.includes(party)) {
+      hidden_parties.push(party);
     }
   } else {
-    if (hidden_parties.includes(e.plotid)) {
-      hidden_parties.splice(hidden_parties.indexOf(e.plotid), 1);
+    if (hidden_parties.includes(party)) {
+      hidden_parties.splice(hidden_parties.indexOf(party), 1);
     }
   }
 
+  // Toggle estimation plot visibility
+  zingchart.exec(chart_id, 'modifyplot', {
+    plotid: party,
+    data: { visible: !hide },
+    update: false
+  });
+  
+  
   // Toggle confidence range plot visibility
   zingchart.exec(chart_id, 'modifyplot', {
-    plotid: e.plotid+'-range',
-    data: { alphaArea: e.visible ? 0 : 0.05},
+    plotid: party+'-range',
+    data: { alphaArea: hide ? 0 : 0.05 },
     update: false
   });
 
   // Toggle poll plot visibility for this party
   pollsters.forEach(pollster => {
     zingchart.exec(chart_id, 'modifyplot', {
-      plotid: e.plotid+'-poll-'+pollster,
-      data: {marker: {visible: (polls_enabled && !e.visible)}},
+      plotid: party+'-poll-'+pollster,
+      data: { marker: { visible: (polls_enabled && !hide) } },
       update: false,
     });
   });
+}
 
+function onLegendClick(e) {
+  clearTimeout(dblclick_timeout);
+
+  const prev_click_time = legend_click_time;
+  const prev_click_target = legend_click_target;
+  legend_click_time = e.ev.timeStamp;
+  legend_click_target = e.plotid;
+
+  const is_dblclick = !e.visible
+    && prev_click_target === legend_click_target
+    && legend_click_time < prev_click_time + dblclick_threshhold;
+
+  togglePlot(e.plotid, e.visible);
+
+  // Handle double-click event
+  if (is_dblclick) {
+    // If only the clicked party is currently visible, make all others visible;
+    // otherwise, hide all others and leave only the clicked party visible.
+    const hide_state = hidden_parties.length !== loaded_parties.length - 1;
+    loaded_parties.forEach(party => {
+      if (party !== e.plotid) togglePlot(party, hide_state);
+    });
+  }
+  
   // Set Y scale max to the next multiple of 2% over the maximum visible plot point
   const y_max = 2 * Math.ceil(
     100 * Math.max(
@@ -488,9 +525,9 @@ function onLegendClick(e) {
         .map(x => party_max_y[x])
     ) / 2
   );
-  zingchart.exec(chart_id, 'modify', {update: false, data: { scaleY: { maxValue: y_max } }});
+  zingchart.exec(chart_id, 'modify', { update: false, data: { scaleY: { maxValue: y_max } } });
 
-  setTimeout(()=>zingchart.exec(chart_id,'update'),1);
+  dblclick_timeout = setTimeout(()=>zingchart.exec(chart_id,'update'), is_dblclick ? 1 : dblclick_threshhold);
 };
 
 function onShapeClick(e) {
