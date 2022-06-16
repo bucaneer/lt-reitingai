@@ -134,7 +134,7 @@ run_pred <- function() {
           adapt_delta = .97,
           max_treedepth = 15,
           silent = 0,
-          file = here("_output", paste0("model", "_", START_DATE, "_", END_DATE))
+          file = here("_output", paste0("model", "_", START_DATE, "_", END_DATE, "_", nrow(dta)))
       )
 }
 
