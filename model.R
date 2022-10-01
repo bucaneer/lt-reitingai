@@ -44,9 +44,11 @@ load_raw <- function() {
         #"CP/TTS",
     ))
     
-    # Set time range starting 2 years before the end of the latest poll
+    # Set time range starting 2 years before the end of the latest poll,
+    # + 3 months starting buffer not included in the final output
     END_DATE <<- ymd(max(raw_data$end_date))
-    START_DATE <<- END_DATE - years(2)
+    OUTPUT_START_DATE <<- END_DATE - years(2)
+    START_DATE <<- OUTPUT_START_DATE - months(3)
     
     # Remove data outside date range
     raw_data <<- raw_data[!raw_data$`start_date` < START_DATE,]
@@ -161,7 +163,8 @@ analyze_pred <- function() {
         .groups = "drop"
       ) %>%
       ungroup() %>%
-      rename(party = .category)
+      rename(party = .category) %>%
+      filter(date > OUTPUT_START_DATE)
      
     csv_filename <- here("_output", paste0("model", "_", START_DATE, "_", END_DATE, ".csv"))
     write.csv(pred_dta, csv_filename, row.names=F)
