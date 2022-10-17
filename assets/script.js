@@ -128,9 +128,9 @@ const partyStyles = {
   },
   "TT.LT": {
     color: "#fbba00",
-    label: "TT/LT",
-    description_lt: "Tvarka ir teisingumas / Laisvė ir teisingumas",
-    description_en: "Order and Justice / Freedom and Justice",
+    label: "LT",
+    description_lt: "Laisvė ir teisingumas",
+    description_en: "Freedom and Justice",
   },
   "DP": {
     color: "#56B4E9",
