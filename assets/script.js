@@ -470,27 +470,27 @@ function togglePlot(party, hide) {
   }
 
   // Toggle estimation plot visibility
-  zingchart.exec(chart_id, 'modifyplot', {
+  setTimeout(()=>zingchart.exec(chart_id, 'modifyplot', {
     plotid: party,
     data: { visible: !hide },
     update: false
-  });
+  }), 0);
   
   
   // Toggle confidence range plot visibility
-  zingchart.exec(chart_id, 'modifyplot', {
+  setTimeout(()=>zingchart.exec(chart_id, 'modifyplot', {
     plotid: party+'-range',
     data: { alphaArea: hide ? 0 : 0.05 },
     update: false
-  });
+  }), 0);
 
   // Toggle poll plot visibility for this party
   pollsters.forEach(pollster => {
-    zingchart.exec(chart_id, 'modifyplot', {
+    setTimeout(()=>zingchart.exec(chart_id, 'modifyplot', {
       plotid: party+'-poll-'+pollster,
       data: { marker: { visible: (polls_enabled && !hide) } },
       update: false,
-    });
+    }), 0);
   });
 }
 
