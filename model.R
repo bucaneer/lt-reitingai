@@ -47,8 +47,8 @@ load_raw <- function() {
     # Set time range starting 2 years before the end of the latest poll,
     # + 3 months starting buffer not included in the final output
     END_DATE <<- ymd(max(raw_data$end_date))
-    OUTPUT_START_DATE <<- END_DATE - years(2)
-    START_DATE <<- OUTPUT_START_DATE - months(3)
+    OUTPUT_START_DATE <<- END_DATE %m-% years(2)
+    START_DATE <<- OUTPUT_START_DATE %m-% months(3)
     
     # Remove data outside date range
     raw_data <<- raw_data[!raw_data$`start_date` < START_DATE,]
