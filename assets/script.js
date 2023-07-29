@@ -326,7 +326,7 @@ function loadPollModel(data) {
     });
   });
 
-  chart_config.scaleX.step = dates[1] - dates[0];
+  chart_config.scaleX.step = 1000*60*60*24*7; // 1 week
   chart_config.scaleX.minValue = dates[0];
 }
 
