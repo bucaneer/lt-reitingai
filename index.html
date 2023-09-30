@@ -6,9 +6,9 @@
     <title>Lietuvos partijų populiarumo reitingai</title>
     <script src="assets/zingchart.min.js"></script>
     <script src="assets/csvToArray.v2.1.min.js"></script>
-    <script src="assets/script.js"></script>
+    <script src="assets/script.js?v=2"></script>
     <link href="https://fonts.googleapis.com/css2?family=Asap+Condensed:wght@500&family=Libre+Baskerville:wght@400&display=swap&subset=latin,latin-ext" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="assets/style.css">
+    <link rel="stylesheet" type="text/css" href="assets/style.css?v=2">
     <link rel="alternate" hreflang="lt" href="index.html">
     <link rel="alternate" hreflang="en" href="index_en.html">
   </head>
@@ -24,6 +24,30 @@
         <p>Kiekviena visuomenės apklausa turi savo paklaidą: apklausus apie 1000 atsitiktinių Lietuvos rinkėjų, gauti rezultatai nuo realybės gali skirtis iki ±3 procentinių punktų. Kiekviena tyrimų agentūra dėl savo apklausos metodikos ir respondentų atrinkimo taip pat gali turėti tam tikrą tendencingumą, kuomet apklausų rezultatai individualioms partijoms nuolat krypsta į vieną ar kitą pusę. Tačiau pateikiant visuomenės apklausų rezultatus žiniasklaidoje paprastai naujausi rezultatai palyginami tik su vienos ankstesnės apklausos rezultatais iš tos pačios agentūros, tad dažnu atveju vertinamas ne realus nuomonės pokytis, o tik statistinis triukšmas, atsirandantis dėl paklaidų. Reitingų apibendrinimas panaikina statistinį triukšmą bei kompensuoja tendencingumą, todėl apibendrinto grafiko kreivės leidžia susidaryti tikslesnį vaizdą apie partijų populiarumą.</p>
 
         <p>Visi pradiniai duomenys ir jų apibendrinimo programinis kodas pasiekiami <a href="https://github.com/bucaneer/lt-reitingai">čia</a>.</p>
+      </section>
+      <section id="poll_table" hidden>
+        <hr>
+        <h2>Naujausios apklausos</h2>
+        <table>
+          <thead>
+            <tr>
+              <th class="al-l">Data nuo</th>
+              <th class="al-l">Data iki</th>
+              <th class="al-l">Agentūra</th>
+              <th hidden class="party-placeholder"></th>
+              <th class="al-r">Nežino / nebalsuotų</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr hidden class="template">
+              <td data-name="start_date"></td>
+              <td data-name="end_date"></td>
+              <td data-name="pollster"></td>
+              <td hidden class="party-placeholder al-r"></td>
+              <td data-name="none" class="al-r"></td>
+            </tr>
+          </tbody>
+        </table>
       </section>
     </main>
   </body>

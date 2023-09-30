@@ -6,9 +6,9 @@
     <title>Lithuanian political opinion polling</title>
     <script src="assets/zingchart.min.js"></script>
     <script src="assets/csvToArray.v2.1.min.js"></script>
-    <script src="assets/script.js"></script>
+    <script src="assets/script.js?v=2"></script>
     <link href="https://fonts.googleapis.com/css2?family=Asap+Condensed:wght@500&family=Libre+Baskerville:wght@400&display=swap&subset=latin,latin-ext" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="assets/style.css">
+    <link rel="stylesheet" type="text/css" href="assets/style.css?v=2">
     <link rel="alternate" hreflang="lt" href="index.html">
     <link rel="alternate" hreflang="en" href="index_en.html">
   </head>
@@ -24,6 +24,30 @@
         <p>Every poll has its margin of error: when 1000 random Lithuanian voters are polled, the results may differ from reality by up to ±3 percentage points. Every pollster may also have a certain bias caused by their methodology and selection of respondents, where the results for individual parties may always skew to either direction. However, when new polling results are reported in the media, they are usually only compared to one earlier poll from the same pollster, so often times the report does not discuss real changes in public opinion, but only statistical noise emerging from compounded errors. Pooling the polls eliminates statistical noise and compensates for pollster bias, so the lines of the graph provide a better picture of party popularity.</p>
 
         <p>All raw data and the pooling source code are available <a href="https://github.com/bucaneer/lt-reitingai">here</a>.</p>
+      </section>
+      <section id="poll_table" hidden>
+        <hr>
+        <h2>Latest polls</h2>
+        <table>
+          <thead>
+            <tr>
+              <th class="al-l">Start date</th>
+              <th class="al-l">End date</th>
+              <th class="al-l">Pollster</th>
+              <th hidden class="party-placeholder"></th>
+              <th class="al-r">Don't&nbsp;know / won't&nbsp;vote</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr hidden class="template">
+              <td data-name="start_date"></td>
+              <td data-name="end_date"></td>
+              <td data-name="pollster"></td>
+              <td hidden class="party-placeholder al-r"></td>
+              <td data-name="none" class="al-r"></td>
+            </tr>
+          </tbody>
+        </table>
       </section>
     </main>
   </body>

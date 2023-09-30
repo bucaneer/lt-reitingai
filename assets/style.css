@@ -74,12 +74,14 @@ a:active {
     color: var(--c-light);
     border-color: var(--c-visited);
 }
-h1 {
+h1, h2 {
     font-family: var(--f-sans);
     color: var(--c-primary);
     font-weight: 500;
-    font-size: 1.75rem;
     text-align: center;
+}
+h1 {
+    font-size: 1.75rem;
     margin-top: .5em;
     margin-bottom: .25em;
 }
@@ -88,4 +90,25 @@ hr {
 }
 #poll-timeline a {
     border: 0;
+}
+.al-l {
+    text-align: left;
+}
+.al-r {
+    text-align: right;
+}
+th.al-r {
+    max-width: 5rem;
+}
+table {
+    width: 100%;
+    margin-top: 1rem;
+    margin-bottom: 2rem;
+}
+table th {
+    font-family: var(--f-sans);
+}
+table td {
+    padding: 0 .5rem;
+    line-height: 2rem;
 }

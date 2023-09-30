@@ -140,7 +140,7 @@ const partyStyles = {
   },
   "CP.TTS": {
     color: "#04a03c",
-    label: "CP/TTS",
+    label: "CP / TTS",
     description_lt: "Centro partija / Tautos ir teisingumo sąjunga",
     description_en: "Centre Party / Nation and Justice Union",
   },
@@ -152,9 +152,9 @@ const partyStyles = {
   },
   "LSDDP.LRP": {
     color: "#bf1e37",
-    label: "LSDDP/LRP",
-    description_lt: "Lietuvos socialdemokratų darbo partija / Lietuvos regionų partija",
-    description_en: "Social Democratic Labour Party of Lithuania / Lithuanian Party of Regions",
+    label: "LRP",
+    description_lt: "Lietuvos regionų partija",
+    description_en: "Lithuanian Party of Regions",
   },
   "VL": {
     color: "#002060",
@@ -457,6 +457,61 @@ async function loadPolls(data) {
   renderChart();
 }
 
+async function populateTable(data) {
+  const header = data[0].map(name => name.replace(/[\-\/]/, '.'));
+
+  const table_section = document.getElementById('poll_table');
+  if (!table_section) return;
+
+  const table_header = table_section.querySelector('table thead tr');
+  const head_placeholder = table_header.querySelector('.party-placeholder');
+  const row_template = table_section.querySelector('tbody tr.template');
+  const body_placeholder = row_template.querySelector('.party-placeholder');
+
+  // Wait until all relevant variables from the model data are initialized
+  await window.model_promise;
+
+  loaded_parties.forEach(party => {
+    const label = partyStyles[party].label;
+    const party_th = document.createElement('th');
+    party_th.innerHTML = label;
+    party_th.setAttribute('title', partyStyles[party]['description_'+locale]);
+    party_th.classList.add('al-r');
+    head_placeholder.before(party_th);
+
+    const party_td = document.createElement('td');
+    party_td.setAttribute('data-name', party);
+    party_td.classList.add('al-r');
+    body_placeholder.before(party_td);
+  });
+
+  data.forEach((row, i) => {
+    if (i === 0) return;
+    if (i < data.length - 10) return;
+
+    const entry = Object.assign(...header.map((k, i) => ({[k]: row[i]})));
+
+    const body_row = row_template.cloneNode(true);
+    body_row.toggleAttribute('hidden', false);
+    header.forEach(name => {
+      const cell = body_row.querySelector('[data-name="'+name+'"]');
+      if (!cell) return;
+      let value = entry[name];
+      if (name == 'none'
+        || loaded_parties.includes(name)
+      ) {
+        value = isNaN(parseFloat(value))
+            ? '—'
+            : (parseFloat(value) * 100).toFixed(1) + '%';
+      }
+      cell.innerHTML = value;
+    });
+    row_template.after(body_row);
+  });
+
+  table_section.toggleAttribute('hidden', false);
+}
+
 function togglePlot(party, hide) {
   // Add or remove party ID from hidden_parties list
   if (hide) {
@@ -568,5 +623,9 @@ window.addEventListener('load', async (event) => {
 
   window.polls_promise = fetch('polls.csv', {cache: 'no-cache'})
     .then(response => response.text())
-    .then(data => loadPolls(data.csvToArray({rSep:"\n"})) );
+    .then(data => {
+      let parsed_data = data.csvToArray({rSep:"\n"});
+      loadPolls(parsed_data);
+      populateTable(parsed_data);
+    });
 });
