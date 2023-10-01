@@ -454,7 +454,7 @@ async function loadPolls(data) {
 
   });
   
-  renderChart();
+  window.setTimeout(renderChart, 0);
 }
 
 async function populateTable(data) {
@@ -614,6 +614,19 @@ function renderChart() {
     data: chart_config,
     height: '600px',
   });
+
+  document.getElementById('static-chart').remove();
+
+  if (window.export_mode || false) {
+    zingchart.exec(chart_id, 'getimagedata', {
+      format: 'png',
+      callback : function(imagedata) {
+        document.open();
+        document.write(imagedata);
+        document.close();
+      }
+    });
+  }
 }
 
 window.addEventListener('load', async (event) => {

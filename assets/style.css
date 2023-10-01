@@ -33,7 +33,14 @@ section#content {
 }
 
 div#poll-timeline {
+    width: 100%;
     height: 600px;
+}
+
+img#static-chart {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
 }
 
 .language-link {
