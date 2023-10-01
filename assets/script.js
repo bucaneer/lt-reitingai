@@ -459,6 +459,7 @@ async function loadPolls(data) {
 
 async function populateTable(data) {
   const header = data[0].map(name => name.replace(/[\-\/]/, '.'));
+  header.push('oth');
 
   const table_section = document.getElementById('poll_table');
   if (!table_section) return;
@@ -491,15 +492,26 @@ async function populateTable(data) {
 
     const entry = Object.assign(...header.map((k, i) => ({[k]: row[i]})));
 
+    const num_cols = loaded_parties;
+    num_cols.push('oth')
+    num_cols.push('none');
+
+    entry.oth = 1 - Object.keys(entry)
+      .reduce((sum, key) => {
+        let value = 0;
+        if (entry[key] && num_cols.includes(key)) {
+          value = parseFloat(entry[key]);
+        }
+        return sum + value;
+      }, 0);
+
     const body_row = row_template.cloneNode(true);
     body_row.toggleAttribute('hidden', false);
     header.forEach(name => {
       const cell = body_row.querySelector('[data-name="'+name+'"]');
       if (!cell) return;
       let value = entry[name];
-      if (name == 'none'
-        || loaded_parties.includes(name)
-      ) {
+      if (num_cols.includes(name)) {
         value = isNaN(parseFloat(value))
             ? '—'
             : (parseFloat(value) * 100).toFixed(1) + '%';

@@ -114,6 +114,7 @@ table {
 }
 table th {
     font-family: var(--f-sans);
+    font-weight: 500;
 }
 table td {
     padding: 0 .5rem;
