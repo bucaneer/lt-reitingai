@@ -61,7 +61,12 @@ const chart_config = {
     minValue: 0,
     lineColor: 'white',
   },
-  plot: {},
+  plot: {
+    exact: true,
+    smartSampling: true,
+    maxTrackers: 0,
+    maxNodes: 0,
+  },
   plotarea: {
     backgroundColor: '#f5f5f5',
     marginTop: 0,
@@ -492,7 +497,7 @@ async function populateTable(data) {
 
     const entry = Object.assign(...header.map((k, i) => ({[k]: row[i]})));
 
-    const num_cols = loaded_parties;
+    const num_cols = [...loaded_parties];
     num_cols.push('oth')
     num_cols.push('none');
 
@@ -625,6 +630,7 @@ function renderChart() {
     id: chart_id,
     data: chart_config,
     height: '600px',
+    output: 'canvas',
   });
 
   document.getElementById('static-chart').remove();
