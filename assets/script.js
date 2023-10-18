@@ -622,6 +622,8 @@ function onShapeClick(e) {
 }
 
 function renderChart() {
+  const export_mode = window.export_mode || false;
+
   zingchart.bind(chart_id, 'legend_item_click', onLegendClick);
   zingchart.bind(chart_id, 'legend_marker_click', onLegendClick);
   zingchart.bind(chart_id, 'shape_click', onShapeClick);
@@ -630,12 +632,12 @@ function renderChart() {
     id: chart_id,
     data: chart_config,
     height: '600px',
-    output: 'canvas',
+    output: export_mode ? 'svg' : 'canvas',
   });
 
   document.getElementById('static-chart').remove();
 
-  if (window.export_mode || false) {
+  if (export_mode) {
     zingchart.exec(chart_id, 'getimagedata', {
       format: 'png',
       callback : function(imagedata) {
