@@ -59,34 +59,6 @@ load_raw <- function() {
     
     # Calculate middle of the polling period
     series["date"] <<- ymd(series$start_date) + ((ymd(series$end_date) - ymd(series$start_date)) / 2)
-    
-    ## Fill NA with normally distributed values around 1%
-    ## (disabled due to brm_multi race-condition(?) issues)
-    # multi_dta <<- list()
-    # for (i in 1:3) {
-    #     copy <- series
-    #     for (j in 1:length(partynames)) {
-    #         copy[partynames[j]][is.na(copy[partynames[j]])] <- rnorm(sum(is.na(copy[partynames[j]])), 0.01, 0.002)
-    #        
-    #         # Replace zeros with 0.01%
-    #         copy[partynames[j]][copy[partynames[j]] <= 0] <- 0.0001
-    #     }
-    #     copy["oth"] <- (1 - rowSums(copy[partynames]))
-    #    
-    #     dta <- copy[c("date", "pollster", partynames, "oth")] %>% tibble()
-    #    
-    #     dta <-
-    #       dta %>%
-    #       mutate(time = interval(START_DATE, date)/years(1))
-    #    
-    #     dta <-
-    #       dta %>%
-    #       mutate(
-    #         outcome = as.matrix(dta[names(dta) %in% c(partynames, "oth")])
-    #       )
-    #    
-    #     multi_dta[[i]] <<- dta
-    # }
 
     # Replace 0 values with 0.001%
     series[series == 0] <- 0.00001
@@ -110,16 +82,13 @@ load_raw <- function() {
 }
 
 run_pred <- function() {
-    priors <- set_prior("gamma(1, 0.01)", class = "phi")
+    dpars <- map_chr(partynames, ~ paste0("mu", gsub(".","",.x,fixed=T)))
     
-    for(i in 1:length(partynames)) {
-        dpar1 = paste0("mu", gsub(".","",partynames[i],fixed=T))
-        priors <- priors +
-            set_prior("normal(0, 1.5)", class = "Intercept", dpar = dpar1) +
-            set_prior("normal(0, 0.5)", class = "b", dpar = dpar1) +
-            set_prior("exponential(2)", class = "sd", dpar = dpar1) +
-            set_prior("exponential(2)", class = "sds", dpar = dpar1)
-    }
+    priors <- set_prior("gamma(1, 0.01)", class = "phi") +
+		set_prior("normal(0, 1.5)", class = "Intercept", dpar = dpars) +
+		set_prior("normal(0, 0.5)", class = "b", dpar = dpars) +
+		set_prior("exponential(2)", class = "sd", dpar = dpars) +
+		set_prior("exponential(2)", class = "sds", dpar = dpars)
     
     m1 <<-
       brm(formula = bf(outcome ~ 1 + s(time, k = 20) + (1 | pollster)),
@@ -150,10 +119,11 @@ analyze_pred <- function() {
       )
     
     pred_dta <<-
-      add_fitted_draws(
-        model = m1,
+      add_epred_draws(
+        object = m1,
         newdata = pred_dta,
-        re_formula = NA
+        re_formula = NA,
+        value = ".value"
       ) %>%
       group_by(date, .category) %>%
       summarise(
