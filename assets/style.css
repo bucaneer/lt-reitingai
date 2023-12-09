@@ -106,6 +106,10 @@ hr {
 }
 th.al-r {
     max-width: 5rem;
+    padding-right: .5rem;
+}
+th:not(.al-r) {
+    padding-left: .5rem;
 }
 table {
     width: 100%;
