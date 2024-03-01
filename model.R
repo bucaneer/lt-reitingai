@@ -91,7 +91,7 @@ run_pred <- function() {
 		set_prior("exponential(2)", class = "sds", dpar = dpars)
     
     m1 <<-
-      brm(formula = bf(outcome ~ 1 + s(time, k = 20) + (1 | pollster)),
+      brm(formula = bf(outcome ~ 1 + s(time, k = 40) + (1 | pollster)),
           family = dirichlet(link = "logit", refcat = "oth"),
           prior = priors,
           backend = "cmdstanr",
