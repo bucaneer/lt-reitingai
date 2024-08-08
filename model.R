@@ -97,7 +97,7 @@ run_pred <- function() {
           backend = "cmdstanr",
           data = dta,
           seed = seed,
-          iter = 5e3,
+          iter = 1e3,
           chains = 6,
           cores = 12,
           threads = threading(6),
