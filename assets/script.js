@@ -167,6 +167,12 @@ const partyStyles = {
     description_lt: "Demokratų sąjunga \"Vardan Lietuvos\"",
     description_en: "Union of Democrats \"For Lithuania\"",
   },
+  "NA.": {
+    color: "#8c361d",
+    label: "NA",
+    description_lt: "Nemuno aušra",
+    description_en: "Dawn of Nemunas",
+  }
 };
 
 // Define display styles of pollster data

@@ -40,7 +40,8 @@ load_raw <- function() {
         "LSDDP/LRP",
         "LLRA-KSS",
         "TT/LT",
-        "VL"
+        "VL",
+        "NA."
         #"CP/TTS",
     ))
     
