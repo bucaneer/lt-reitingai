@@ -124,3 +124,27 @@ table td {
     padding: 0 .5rem;
     line-height: 2rem;
 }
+.show-radio-row {
+    display: flex;
+    justify-content: center;
+}
+.show-radio-row > div {
+    margin: 1rem;
+}
+input[name=show] {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+input[name=show] + label {
+    font-family: var(--f-sans);
+    padding: .5rem;
+    border: .25rem solid var(--c-primary);
+    color: var(--c-primary);
+    text-transform: uppercase;
+    cursor: pointer;
+}
+input[name=show]:checked + label {
+    background-color: var(--c-primary);
+    color: var(--c-light);
+}

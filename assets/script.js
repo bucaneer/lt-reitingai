@@ -24,7 +24,7 @@ const chart_id = 'poll-timeline';
 const locale = document.documentElement.lang;
 
 // Define base chart configuration
-const chart_config = {
+const base_config = {
   type: 'mixed',
   locale: locale,
   legend: {
@@ -52,7 +52,6 @@ const chart_config = {
     lineColor: 'white',
   },
   scaleY: {
-    label: { text: locale === 'lt' ? 'Populiarumas' : 'Popularity' },
     format: "%v%",
     guide: {
       visible: true,
@@ -95,9 +94,57 @@ const chart_config = {
       zIndex: -1,
     }
   ],
+};
+
+const chart_config = {
+  ...base_config,
+  scaleX: {
+    ...base_config.scaleX,
+  },
+  scaleY: {
+    ...base_config.scaleY,
+    label: { text: locale === 'lt' ? 'Populiarumas' : 'Popularity' },
+  },
   series: [],
   shapes: [],
 };
+
+const res_config = {
+  ...base_config,
+  scaleX: {
+    ...base_config.scaleX,
+  },
+  scaleY: {
+    ...base_config.scaleY,
+    label: { text: locale === 'lt' ? '% nuo rinkėjų' : '% of voters' },
+  },
+  series: [],
+  shapes: [],
+};
+
+const mand_config = {
+  ...base_config,
+  type: "area",
+  plot: {
+    ...base_config.plot,
+    stacked: true,
+    alphaArea: 0.7,
+  },
+  scaleX: {
+    ...base_config.scaleX,
+  },
+  scaleY: {
+    ...base_config.scaleY,
+    label: { text: locale === 'lt' ? 'Mandatai daugiamandatėje' : 'Seats in multi-member constituency' },
+    format: "%v",
+    minValue: 0,
+    maxValue: 70,
+  },
+  series: [],
+  shapes: [],
+};
+
+let active_config = chart_config;
 
 // Define display styles of party data
 const partyStyles = {
@@ -190,6 +237,7 @@ const pollsterStyles = {
 
 const loaded_parties = [];
 const dates = [];
+const res_dates = [];
 const pollsters = [];
 const hidden_parties = [];
 const party_max_y = {};
@@ -198,6 +246,7 @@ let polls_enabled = false;
 let legend_click_target;
 let legend_click_time;
 let dblclick_timeout;
+let show = 'popularity';
 
 function loadPollModel(data) {
   const header = data[0];
@@ -468,6 +517,128 @@ async function loadPolls(data) {
   window.setTimeout(renderChart, 0);
 }
 
+function loadResData(data) {
+  const header = data[0];
+  const series = {};
+  const series_names = ['res', 'mandates'];
+  
+  // Process CSV data into data series
+  data.forEach((row, i) => {
+    if (i === 0) return;
+    const entry = Object.assign(...header.map((k, i) => ({[k]: row[i]})));
+    
+    if (!series[entry['party']]) {
+      series[entry['party']] = {
+        res: [],
+        mandates: [],
+      }
+    }
+    
+    // Populate dates (x-scale) array
+    const parsed_date = +new Date(entry['date']);
+    if (parsed_date != res_dates[res_dates.length-1]) {
+      res_dates.push(parsed_date);
+    }
+
+    // Populate main series
+    series[entry['party']]['res'].push(parseFloat(entry['res'])*100);
+    series[entry['party']]['mandates'].push(parseInt(entry['mandates']));
+  });
+
+  // Sort parties by latest popularity ranking
+  const latest_index = series[Object.keys(series)[0]]['res'].length - 1;
+  const parties = Object.keys(series)
+    .sort((a, b) => series[b]['res'][latest_index] - series[a]['res'][latest_index]);
+
+  parties.forEach(party => {
+    // Add result plot
+    res_config.series.push({
+      id: party,
+      text: partyStyles[party]['label'],
+      description: partyStyles[party]['description_'+locale],
+      values: series[party]['res'].map((value, i) => [res_dates[i], value]),
+      type: 'line',
+      marker: {
+        visible: false,
+      },
+      guideLabel: {
+        backgroundColor: partyStyles[party]['color'],
+        borderWidth: 0,
+        borderRadius: 5,
+        padding: 5,
+        text: '%t: <b>%v%</b>',
+        fontColor: 'white',
+      },
+      tooltip: {
+        visible: false,
+      },
+      legendItem: {
+        backgroundColor: partyStyles[party]['color'],
+        borderRadius: 5,
+        fontColor: "white",
+        shadow: false,
+        borderWidth: 0,
+      },
+      legendMarker: {
+        visible: false,
+      },
+      lineColor: partyStyles[party]['color'],
+      lineWidth: '3px',
+      decimals: 1,
+      zIndex: 5,
+    });
+
+    // Add mandate plot
+    mand_config.series.push({
+      id: party,
+      text: partyStyles[party]['label'],
+      description: partyStyles[party]['description_'+locale],
+      values: series[party]['mandates'].map((value, i) => [res_dates[i], value]),
+      type: 'area',
+      marker: {
+        visible: false,
+      },
+      guideLabel: {
+        backgroundColor: partyStyles[party]['color'],
+        borderWidth: 0,
+        borderRadius: 5,
+        padding: 5,
+        text: '%t: <b>%v</b>',
+        fontColor: 'white',
+        rules: [
+          {
+            rule: '%v <= 0',
+            visible: false,
+          },
+        ],
+      },
+      tooltip: {
+        visible: false,
+      },
+      legendItem: {
+        backgroundColor: partyStyles[party]['color'],
+        borderRadius: 5,
+        fontColor: "white",
+        shadow: false,
+        borderWidth: 0,
+      },
+      legendMarker: {
+        visible: false,
+      },
+      backgroundColor: partyStyles[party]['color'],
+      lineWidth: 0,
+      decimals: 0,
+      zIndex: 5,
+    });
+  });
+
+  res_config.scaleX.step = 1000*60*60*24*7; // 1 week
+  res_config.scaleX.minValue = res_dates[0];
+
+  mand_config.scaleX.step = 1000*60*60*24*7; // 1 week
+  mand_config.scaleX.minValue = res_dates[0];
+}
+
 async function populateTable(data) {
   const header = data[0].map(name => name.replace(/[\-\/]/, '.'));
   header.push('oth');
@@ -573,6 +744,8 @@ function togglePlot(party, hide) {
 }
 
 function onLegendClick(e) {
+  if (show !== "popularity") return;
+
   clearTimeout(dblclick_timeout);
 
   const prev_click_time = legend_click_time;
@@ -627,19 +800,46 @@ function onShapeClick(e) {
   }
 }
 
-function renderChart() {
-  const export_mode = window.export_mode || false;
+function updateShow() {
+  show = document.querySelector('input[name=show]:checked').value;
+}
+
+function onViewChange(e) {
+  updateShow();
+
+  switch (show) {
+    case "results":
+      active_config = res_config;
+    break;
+    case "mandates":
+      active_config = mand_config;
+    break;
+    case "popularity":
+    default:
+      active_config = chart_config;
+    break;
+  }
+
+  draw(false);
+}
+
+function draw(export_mode) {
+  zingchart.render({
+    id: chart_id,
+    data: active_config,
+    height: '600px',
+    output: export_mode ? 'svg' : 'canvas',
+  });
 
   zingchart.bind(chart_id, 'legend_item_click', onLegendClick);
   zingchart.bind(chart_id, 'legend_marker_click', onLegendClick);
   zingchart.bind(chart_id, 'shape_click', onShapeClick);
+}
 
-  zingchart.render({
-    id: chart_id,
-    data: chart_config,
-    height: '600px',
-    output: export_mode ? 'svg' : 'canvas',
-  });
+function renderChart() {
+  const export_mode = window.export_mode || false;
+
+  draw(export_mode);
 
   document.getElementById('static-chart').remove();
 
@@ -656,6 +856,11 @@ function renderChart() {
 }
 
 window.addEventListener('load', async (event) => {
+  document.querySelectorAll('input[name=show]')
+    .forEach(elem => elem.addEventListener('change', onViewChange));
+
+  updateShow();
+
   window.model_promise = fetch('_output/model-latest.csv', {cache: 'no-cache'})
     .then(response => response.text())
     .then(data => loadPollModel(data.csvToArray({rSep:"\n"})) );
@@ -666,5 +871,15 @@ window.addEventListener('load', async (event) => {
       let parsed_data = data.csvToArray({rSep:"\n"});
       loadPolls(parsed_data);
       populateTable(parsed_data);
+    });
+
+  window.res_promise = fetch('_output/res-latest.csv', {cache: 'no-cache'})
+    .then(response => response.text())
+    .then(data => {
+      loadResData(data.csvToArray({rSep:"\n"}));
+      updateShow();
+      if (show !== "popularity") {
+        onViewChange();
+      }
     });
 });

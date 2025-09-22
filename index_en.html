@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta http-equiv="Content-Language" content="en">
-    <title>Lithuanian political opinion polling</title>
+    <title>Lithuanian political opinion polling & Seimas election forecast</title>
     <script src="assets/zingchart.min.js"></script>
     <script src="assets/csvToArray.v2.1.min.js"></script>
     <script src="assets/script.js?v=2"></script>
@@ -16,9 +16,23 @@
     <main>
       <section id="content">
         <a class="language-link" href="index.html" lang="lt" title="Lietuviškai">LT</a>
-        <h1>Lithuanian political opinion polling <small>(updated <span id="updated_at">2025-08-05</span>)</small></h1>
+        <h1>Lithuanian political opinion polling & Seimas election forecast <small>(updated <span id="updated_at">2025-09-22</span>)</small></h1>
+        <div class="show-radio-row">
+            <div>
+                <input type="radio" name="show" value="popularity" id="show-popularity" checked>
+                <label for="show-popularity">Polling</label>
+            </div>
+            <div>
+                <input type="radio" name="show" value="results" id="show-results">
+                <label for="show-results">Votes forecast</label>
+            </div>
+            <div>
+                <input type="radio" name="show" value="mandates" id="show-mandates">
+                <label for="show-mandates">Mandates forecast</label>
+            </div>
+        </div>
         <div id="poll-timeline">
-          <img id="static-chart" src="assets/chart.png?ts=2025-08-05">
+          <img id="static-chart" src="assets/chart.png?ts=2025-09-22">
         </div>
 
         <p>The graph shows Lithuanian public opinion of political parties, pooled from poll results published in the media from various pollsters (Baltijos tyrimai/ELTA), Spinter tyrimai/Delfi, Vilmorus/Lietuvos rytas). The shaded areas mark the 95% credible interval. The percentages are calculated from all respondents, including the undecided. The graph will be updated as new poll results are released.</p>
@@ -26,6 +40,9 @@
         <p>Every poll has its margin of error: when 1000 random Lithuanian voters are polled, the results may differ from reality by up to ±3 percentage points. Every pollster may also have a certain bias caused by their methodology and selection of respondents, where the results for individual parties may always skew to either direction. However, when new polling results are reported in the media, they are usually only compared to one earlier poll from the same pollster, so often times the report does not discuss real changes in public opinion, but only statistical noise emerging from compounded errors. Pooling the polls eliminates statistical noise and compensates for pollster bias, so the lines of the graph provide a better picture of party popularity.</p>
 
         <p>All raw data and the pooling source code are available <a href="https://github.com/bucaneer/lt-reitingai">here</a>.</p>
+        <p>The pooled polls are used to model the results of parliamentary (Seimas) elections in the multi-member constituency. A mathematical model is based on the principle that the backers of each party have a specific level of voting activity (or loyalty), thus election results indirectly reflect polling. The forecast takes into account the latest polls, their changes over 1 and 6 months, as well as party membership in the ruling coalition and whether it is the first Seimas election for the party. Coefficients for the model are calculated using data of earlier Seimas elections since 2008.</p>
+
+        <p>All raw data and the source code for pooling and modeling are available <a href="https://github.com/bucaneer/lt-reitingai">here</a>.</p>
       </section>
       <section id="poll_table" hidden>
         <hr>
