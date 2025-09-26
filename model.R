@@ -226,7 +226,7 @@ pred_model <- function() {
 	        "VL"=1,
 	        "NA."=1
 		),
-		"2025-10-01"=c(
+		"2025-09-25"=c(
 			"TS-LKD"=0,
 	        "LVZS"=1,
 	        "LSDP"=1,
