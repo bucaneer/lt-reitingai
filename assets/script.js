@@ -219,7 +219,13 @@ const partyStyles = {
     label: "NA",
     description_lt: "Nemuno aušra",
     description_en: "Dawn of Nemunas",
-  }
+  },
+  "NS": {
+    color: "#b91f25",
+    label: "NS",
+    description_lt: "Nacionalinis susivienijimas",
+    description_en: "National Alliance",
+  },
 };
 
 // Define display styles of pollster data

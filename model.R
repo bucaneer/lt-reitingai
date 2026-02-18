@@ -38,11 +38,12 @@ load_raw <- function() {
         "LRLS",
         "DP",
         "LP",
-        "LSDDP/LRP",
+        #"LSDDP/LRP",
         "LLRA-KSS",
-        "TT/LT",
+        #"TT/LT",
         "VL",
-        "NA."
+        "NA.",
+        "NS"
         #"CP/TTS",
     ))
     
@@ -68,6 +69,9 @@ load_raw <- function() {
 		for (pollster in names(table(series$pollster))) {
 			poll_filter <- series$pollster == pollster
 			poll_avg <- mean(series[poll_filter & !is.na(series[[party]]) & series[[party]] > 0,party])
+			if (is.na(poll_avg)) {
+				poll_avg <- all_avg
+			}
 			poll_bias <- 1 + (poll_avg - all_avg) / all_avg
 			# NA ~ 1%
 			series[poll_filter & is.na(series[[party]]),party] <<- poll_bias * 0.01
@@ -115,7 +119,7 @@ run_pred <- function() {
           adapt_delta = .97,
           max_treedepth = 15,
           silent = 0,
-          file = here("_output", paste0("model", "_", START_DATE, "_", END_DATE, "_", nrow(dta))),
+          file = here("_output", paste0("model", "_", START_DATE, "_", END_DATE, "_", nrow(dta), "_", length(partynames))),
           save_model = "brm_model"
       )
 }
@@ -149,7 +153,7 @@ analyze_pred <- function() {
     pred_dta <<- pred_dta_raw %>%
       filter(date > OUTPUT_START_DATE)
      
-    csv_filename <- here("_output", paste0("model", "_", START_DATE, "_", END_DATE, ".csv"))
+    csv_filename <- here("_output", paste0("model", "_", START_DATE, "_", END_DATE, "_", nrow(dta), "_", length(partynames), ".csv"))
     write.csv(pred_dta, csv_filename, row.names=F)
     file.copy(csv_filename, here("_output", "model-latest.csv"), overwrite=T)
 }
@@ -182,7 +186,8 @@ pred_model <- function() {
 	        "LLRA-KSS"=0,
 	        "TT/LT"=0,
 	        "VL"=1,
-	        "NA."=1
+	        "NA."=1,
+	        "NS"=1
 		),
 		"2024-12-12"=c(
 			"TS-LKD"=0,
@@ -195,7 +200,8 @@ pred_model <- function() {
 	        "LLRA-KSS"=0,
 	        "TT/LT"=0,
 	        "VL"=0,
-	        "NA."=0
+	        "NA."=0,
+	        "NS"=1
 		)
 	))
 	
@@ -211,7 +217,8 @@ pred_model <- function() {
 	        "LLRA-KSS"=0,
 	        "TT/LT"=0,
 	        "VL"=0,
-	        "NA."=0
+	        "NA."=0,
+	        "NS"=0
 		),
 		"2024-12-12"=c(
 			"TS-LKD"=0,
@@ -224,7 +231,8 @@ pred_model <- function() {
 	        "LLRA-KSS"=0,
 	        "TT/LT"=0,
 	        "VL"=1,
-	        "NA."=1
+	        "NA."=1,
+	        "NS"=0
 		),
 		"2025-09-25"=c(
 			"TS-LKD"=0,
@@ -237,7 +245,8 @@ pred_model <- function() {
 	        "LLRA-KSS"=1,
 	        "TT/LT"=0,
 	        "VL"=0,
-	        "NA."=1
+	        "NA."=1,
+	        "NS"=0
 		)
 	))
 	
