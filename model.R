@@ -169,11 +169,6 @@ pred_model <- function() {
 	c_change <<- model$change
 	c_change6 <<- model$change6
 	
-	rn <<- c(
-		"2020-12-11",
-		"2024-12-12",
-		"2025-10-01"
-	)
 	new_l <<- t(data.frame(
 		"2020-12-11"=c(
 			"TS-LKD"=0,
@@ -202,7 +197,8 @@ pred_model <- function() {
 	        "VL"=0,
 	        "NA."=0,
 	        "NS"=1
-		)
+		),
+		check.names = FALSE
 	))
 	
 	inc_l <<- t(data.frame(
@@ -247,11 +243,26 @@ pred_model <- function() {
 	        "VL"=0,
 	        "NA."=1,
 	        "NS"=0
-		)
+		),
+		"2026-07-14"=c(
+			"TS-LKD"=0,
+	        "LVZS"=1,
+	        "LSDP"=1,
+	        "LRLS"=0,
+	        "DP"=0,
+	        "LP"=0,
+	        "LSDDP/LRP"=0,
+	        "LLRA-KSS"=1,
+	        "TT/LT"=0,
+	        "VL"=1,
+	        "NA."=0,
+	        "NS"=0
+		),
+		check.names = FALSE
 	))
-	
-	rownames(new_l) <<- rn[1:nrow(new_l)]
-	rownames(inc_l) <<- rn[1:nrow(inc_l)]
+
+	colnames(new_l) <<- make.names(colnames(new_l))
+	colnames(inc_l) <<- make.names(colnames(inc_l))
 	
 	forecast <<- pred_dta_raw %>%
 		select(date, party, est) %>%
@@ -266,13 +277,13 @@ pred_model <- function() {
 	new_df <<- forecast * 0
 	for (i in 1:nrow(new_l)) {
 		filter <- rownames(new_df) > rownames(new_l)[i]
-		new_df[filter,] <<- matrix(rep(new_l[i,], each=sum(filter)), nrow=sum(filter))
+		new_df[filter,] <<- matrix(rep(new_l[i,], each=sum(filter)), nrow=sum(filter), dimnames=list(NULL, colnames(inc_l)))[,partynames]
 	}
 	
 	inc_df <<- forecast * 0
 	for (i in 1:nrow(inc_l)) {
 		filter <- rownames(inc_df) > rownames(inc_l)[i]
-		inc_df[filter,] <<- matrix(rep(inc_l[i,], each=sum(filter)), nrow=sum(filter))
+		inc_df[filter,] <<- matrix(rep(inc_l[i,], each=sum(filter)), nrow=sum(filter), dimnames=list(NULL, colnames(inc_l)))[,partynames]
 	}
 	
 	fact_df <- forecast
