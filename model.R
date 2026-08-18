@@ -277,7 +277,7 @@ pred_model <- function() {
 	new_df <<- forecast * 0
 	for (i in 1:nrow(new_l)) {
 		filter <- rownames(new_df) > rownames(new_l)[i]
-		new_df[filter,] <<- matrix(rep(new_l[i,], each=sum(filter)), nrow=sum(filter), dimnames=list(NULL, colnames(inc_l)))[,partynames]
+		new_df[filter,] <<- matrix(rep(new_l[i,], each=sum(filter)), nrow=sum(filter), dimnames=list(NULL, colnames(new_l)))[,partynames]
 	}
 	
 	inc_df <<- forecast * 0
